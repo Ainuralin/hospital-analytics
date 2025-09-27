@@ -18,11 +18,11 @@ hospital-analytics/
 │ └── init.sql # optional initialization script
 │
 │── data/
-│ ├── patients.xlsx # sample dataset in Excel
-│ └── patients.csv # sample dataset in CSV
+│ ├── Hospital Management System.xlsx
+│
 │
 │── erd/
-│ └── hospital_erd.png # ERD diagram of the database
+│ └── G2_Hospital_Management_Sytem_ERD_final.jpg # ERD diagram of the database
 │
 │── p.py # Python script with SQL queries
 │── requirements.txt # Python dependencies
