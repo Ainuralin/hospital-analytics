@@ -7,7 +7,7 @@
 This project is focused on analyzing hospital management data. Using a sample hospital dataset, we perform SQL queries and Python-based analysis to extract insights such as patient demographics, doctor assignments, appointment statistics, bed utilization, and surgery records. The project aims to demonstrate how structured data can be used for operational and strategic decision-making in a hospital environment.
 
 ## Screenshot
-![Hospital Analytics Dashboard](erd/hospital_erd.png)
+![Hospital Analytics Dashboard](erd/G2_Hospital_Management_Sytem_ERD_final.jpg)
 *Screenshot of the database ERD – main analytics view (placeholder, can be updated later).*
 
 ## Project Structure
@@ -24,7 +24,7 @@ hospital-analytics/
 │── erd/
 │ └── hospital_erd.png # ERD diagram of the database
 │
-│── main.py # Python script with SQL queries
+│── p.py # Python script with SQL queries
 │── requirements.txt # Python dependencies
 │── README.md # this file
 ```
