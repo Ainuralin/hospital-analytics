@@ -25,21 +25,13 @@ hospital-analytics/
 
 
 ## Setup Instructions
-1. Install PostgreSQL and create a database:
+1. **Install PostgreSQL** and create a database:
 ```bash
 create database HospitalManagementSystem
-
-2. **Import the database schema and data**:
-```bash
 psql -U postgres -d HospitalManagementSystem -f sql/Hospital_Management_System.sql
-
-3. Install Python dependencies:
-```bash
 pip install -r requirements.txt
-
-4. Run Python analytics script:
-```bash
 python main.py
+```
 
 ## Analytics
 
