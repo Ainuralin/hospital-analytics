@@ -7,6 +7,7 @@ You work as a data analyst at **MediCare Analytics**, a fictional company provid
 This project demonstrates database analytics for a hospital management system. It uses real-like hospital data to analyze patient admissions, doctor activities, room and bed usage, appointments, surgeries, and staff schedules. The goal is to practice SQL queries, joins, aggregations, and Python-based data analysis.
 
 ## Project Structure
+```
 hospital-analytics/
 │── sql/
 │ ├── Hospital_Management_System.sql # SQL script to create and populate the database
