@@ -1,10 +1,14 @@
 # Hospital Analytics Project
 
 ## Company
-You work as a data analyst at **MediCare Analytics**, a fictional company providing analytics for hospital management and healthcare operations.
+**MediData Analytics** – a data analytics company specializing in healthcare analytics, helping hospitals and clinics to monitor patients, staff, and resources efficiently.
 
 ## Project Overview
-This project demonstrates database analytics for a hospital management system. It uses real-like hospital data to analyze patient admissions, doctor activities, room and bed usage, appointments, surgeries, and staff schedules. The goal is to practice SQL queries, joins, aggregations, and Python-based data analysis.
+This project is focused on analyzing hospital management data. Using a sample hospital dataset, we perform SQL queries and Python-based analysis to extract insights such as patient demographics, doctor assignments, appointment statistics, bed utilization, and surgery records. The project aims to demonstrate how structured data can be used for operational and strategic decision-making in a hospital environment.
+
+## Screenshot
+![Hospital Analytics Dashboard](erd/hospital_erd.png)
+*Screenshot of the database ERD – main analytics view (placeholder, can be updated later).*
 
 ## Project Structure
 ```
@@ -51,9 +55,9 @@ Here are some queries we analyze in this project:
 
 ## Tools and Resources
 
-PostgreSQL for database management
-Python for scripting and analysis
-Libraries: psycopg2, pandas, openpyxl
-Apache Superset (optional, for visualization)
+1. PostgreSQL for database management
+2. Python for scripting and analysis
+3. Libraries: psycopg2, pandas, openpyxl
+4. Apache Superset (optional, for visualization)
 
 
