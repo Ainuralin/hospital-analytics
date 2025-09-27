@@ -23,7 +23,7 @@ hospital-analytics/
 │── main.py # Python script with SQL queries
 │── requirements.txt # Python dependencies
 │── README.md # this file
-
+```
 
 ## Setup Instructions
 1. **Install PostgreSQL** and create a database:
@@ -37,16 +37,16 @@ python main.py
 ## Analytics
 
 Here are some queries we analyze in this project:
-Number of patients by gender.
-Average patient age.
-Number of doctors per department.
-Number of appointments per doctor.
-Average hospital stay duration by department.
-Minimum and maximum procedure costs.
-Number of patients admitted per year.
-Average number of days per bed usage.
-Number of surgeries by type.
-Staff count per department.
+1. Number of patients by gender.
+2. Average patient age.
+3. Number of doctors per department.
+4. Number of appointments per doctor.
+5. Average hospital stay duration by department.
+6. Minimum and maximum procedure costs.
+7. Number of patients admitted per year.
+8. Average number of days per bed usage.
+9. Number of surgeries by type.
+10. Staff count per department.
 
 
 ## Tools and Resources
