@@ -150,4 +150,8 @@ GROUP BY dept.dept_id, dept.dept_name
 ORDER BY "Название отделения";
 """
 nurses_helpers_per_dept = pd.read_sql(query10, engine)
+<<<<<<< HEAD
 print(nurses_helpers_per_dept)
+=======
+print(nurses_helpers_per_dept)
+>>>>>>> 0561f09 (Update project and add .gitignore)
