@@ -6,17 +6,12 @@ from sqlalchemy import create_engine
 from openpyxl.styles import Font, PatternFill, Border, Side, Alignment
 from openpyxl.formatting.rule import ColorScaleRule
 import plotly.express as px
-
-# ===================== ИМПОРТ КОНФИГА =====================
 from config import DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME
 
-# ===================== ПОДКЛЮЧЕНИЕ К БД =====================
 engine = create_engine(f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}')
 
-# ===================== ПАПКА ДЛЯ ГРАФИКОВ =====================
 os.makedirs("charts", exist_ok=True)
 
-# ===================== ФУНКЦИЯ СОХРАНЕНИЯ ГРАФИКОВ =====================
 def save_and_report(df, title, filename, fig=None):
     if df.empty:
         print(f"⚠ {title}: данных нет, график не построен.")
@@ -28,14 +23,13 @@ def save_and_report(df, title, filename, fig=None):
     print(f"▶ {title}: {len(df)} строк(и) получено. График сохранён -> {filepath}")
     plt.close(fig)
 
-# ===================== ФУНКЦИЯ УБОРКИ TIMEZONE =====================
 def remove_tz(df):
     for col in df.columns:
         if pd.api.types.is_datetime64_any_dtype(df[col]):
             df[col] = df[col].dt.tz_localize(None)
     return df
 
-# ===================== 1. Surgery Bar Chart =====================
+# 1. Surgery Bar Chart
 df_surgery = pd.read_sql("""
 SELECT surgery_type, COUNT(surgery_id) AS surgery_count
 FROM surgeryrecord
@@ -44,7 +38,7 @@ GROUP BY surgery_type;
 
 fig, ax = plt.subplots(figsize=(12, 7))
 bars = ax.bar(df_surgery["surgery_type"], df_surgery["surgery_count"],
-              width=0.6, color=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'])
+                width=0.6, color=['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'])
 ax.bar_label(bars, padding=3)
 ax.set_title("Количество операций по типам", fontsize=16, pad=20)
 ax.set_xlabel("Тип операции", fontsize=13)
@@ -53,7 +47,7 @@ plt.xticks(rotation=45, ha="right", fontsize=11)
 plt.tight_layout()
 save_and_report(df_surgery, "Bar chart (операции по типам)", "bar_surgery.png", fig)
 
-# ===================== 2. Horizontal Bar – Врачи по отделениям =====================
+# 2. Horizontal Bar – Врачи по отделениям
 df_doctors = pd.read_sql("""
 SELECT d.dept_name, COUNT(doc.doct_id) AS doctor_count
 FROM doctor doc
@@ -64,7 +58,7 @@ ORDER BY doctor_count;
 
 fig, ax = plt.subplots(figsize=(10, 6))
 bars = ax.barh(df_doctors["dept_name"], df_doctors["doctor_count"],
-               color="skyblue", edgecolor="navy", linewidth=1)
+                color="skyblue", edgecolor="navy", linewidth=1)
 for i, v in enumerate(df_doctors["doctor_count"].values):
     ax.text(v + 0.1, i, str(v), va="center", fontweight="bold")
 ax.set_title("Количество врачей по отделениям", fontsize=16, pad=20)
@@ -74,7 +68,7 @@ ax.grid(axis="x", alpha=0.3)
 plt.tight_layout()
 save_and_report(df_doctors, "Horizontal bar (врачи по отделениям)", "barh_doctors.png", fig)
 
-# ===================== 3. Histogram – Возраст пациентов =====================
+# 3. Histogram – Возраст пациентов
 df_patients = pd.read_sql("SELECT patient_id, date_of_birth FROM patients", engine)
 df_patients['age'] = (pd.to_datetime('today') - pd.to_datetime(df_patients['date_of_birth'])).dt.days // 365
 
@@ -90,7 +84,7 @@ ax.grid(axis='y', alpha=0.3)
 plt.tight_layout()
 save_and_report(df_patients, "Histogram (возраст пациентов)", "hist_age_patients.png", fig)
 
-# ===================== 4. Line Chart – Пациенты по отделениям по месяцам =====================
+# 4. Line Chart – Пациенты по отделениям по месяцам
 df_line = pd.read_sql("""
 SELECT 
     d.dept_name,
@@ -120,7 +114,7 @@ plt.xticks(rotation=45)
 plt.tight_layout()
 save_and_report(df_line, "Line chart (пациенты по отделениям по месяцам)", "line_departments.png", fig)
 
-# ===================== 5. Pie Chart – Распределение пациентов =====================
+# 5. Pie Chart – Распределение пациентов
 df_pie = pd.read_sql("""
 SELECT d.dept_name, COUNT(p.patient_id) AS patient_count
 FROM patients p
@@ -147,7 +141,7 @@ if not df_pie.empty:
     plt.tight_layout()
     save_and_report(df_pie, "Pie chart (пациенты по отделениям)", "pie_departments.png", fig)
 
-# ===================== 6. Scatter Plot – Возраст vs Приёмы =====================
+# 6. Scatter Plot – Возраст vs Приёмы
 df_scatter = pd.read_sql("""
 SELECT 
     p.patient_id,
@@ -166,23 +160,42 @@ ORDER BY age
 fig, ax = plt.subplots(figsize=(12, 8))
 departments = df_scatter['dept_name'].unique()
 colors = plt.cm.tab10.colors[:len(departments)]
+
 for i, dept in enumerate(departments):
     dept_data = df_scatter[df_scatter['dept_name'] == dept]
+    
+    # X немного разбросан
     x_jitter = dept_data['age'] + np.random.uniform(-0.3, 0.3, size=len(dept_data))
-    y_jitter = dept_data['num_appointments'] + np.random.uniform(-0.2, 0.2, size=len(dept_data))
-    ax.scatter(x_jitter, y_jitter,
-                s=np.clip(dept_data['total_payment']/50, 20, 200),
-                alpha=0.6, c=[colors[i]]*len(dept_data),
-                label=dept, edgecolors='black', linewidth=0.5)
+    
+    # Y только чётные целые
+    y_jitter = 2 * (dept_data['num_appointments'].astype(int) // 2)
+
+    ax.scatter(
+        x_jitter, 
+        y_jitter,
+        s=np.clip(dept_data['total_payment'] / 50, 20, 200),
+        alpha=0.6, 
+        c=[colors[i]]*len(dept_data),
+        label=dept, 
+        edgecolors='black', 
+        linewidth=0.5
+    )
+
 ax.set_title("Patients by Age and Number of Appointments", fontsize=16, pad=20)
 ax.set_xlabel("Age", fontsize=12)
 ax.set_ylabel("Number of Appointments", fontsize=12)
 ax.grid(True, alpha=0.3)
 ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
+
+# Убираем дробные метки на оси Y
+y_ticks = range(0, int(df_scatter['num_appointments'].max()) + 2, 2)
+ax.set_yticks(y_ticks)
+
 plt.tight_layout()
 save_and_report(df_scatter, "Scatter plot (возраст vs приёмы)", "scatter_patients.png", fig)
 
-# ===================== 7. Экспорт всех данных в Excel =====================
+
+# 7. Экспорт всех данных в Excel
 def export_to_excel(dataframes_dict, filename):
     os.makedirs(os.path.dirname(filename), exist_ok=True)
     with pd.ExcelWriter(filename, engine='openpyxl') as writer:
@@ -241,19 +254,19 @@ dataframes = {
 
 export_to_excel(dataframes, "exports/hospital_report.xlsx")
 
-# ===================== 8. Interactive Plotly – Поступления по кроватям =====================
+# 8. Interactive Plotly – Поступления по кроватям
 def interactive_bed_plot(engine):
     query = """
     SELECT br.admission_id,
-           br.bed_no,
-           br.patient_id,
-           br.nurse_id,
-           br.helper_id,
-           br.admission_date,
-           br.discharge_date,
-           br.amount,
-           br.mode_of_payment,
-           p.fname || ' ' || p.lname AS patient_name
+            br.bed_no,
+            br.patient_id,
+            br.nurse_id,
+            br.helper_id,
+            br.admission_date,
+            br.discharge_date,
+            br.amount,
+            br.mode_of_payment,
+            p.fname || ' ' || p.lname AS patient_name
     FROM bedrecords br
     JOIN patients p ON br.patient_id = p.patient_id
     ORDER BY br.admission_date
@@ -288,5 +301,4 @@ def interactive_bed_plot(engine):
 
     fig.show()
 
-# ===================== Вызов интерактивного графика =====================
 interactive_bed_plot(engine)
